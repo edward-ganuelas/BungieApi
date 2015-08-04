@@ -4,23 +4,66 @@
 	<title>Bungie API</title>
 </head>
 <body>
+	<form name="lookup" id="lookup">
+		<input type="radio" value="1" name="network" checked="true" />Xbox
+		<input type="radio" value="2" name="network" />PSN
+		<input type="text" id="gamertag" />
+		<input type="submit" value="Submit" />
+	</form>
+	<div id="results">
+		
+	</div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script type="text/javascript">
 //Bungie API
-var apiKey = "";
-var membershipId = "4611686018437039314";
-$.ajax({
- url: "http://www.bungie.net/Platform/Destiny/2/Account/"+membershipId+"/",
- headers: {
-  "X-API-Key": apiKey
- }
-}).done(function(json){
-// console.log(json.Response.data.inventoryItem.itemName); //Gjallarhorn
- //document.write(JSON.parse(json));
- console.log(json.Response["data"]);
- 
+var apiKey = ""; //Get your api key here: https://www.bungie.net/en/User/API
+var membershipType = "1"
+var membershipId = "";
+var kills = null;
+var deaths = null;
+var assists = null;
+var kd = null;
+var kad = null;
+$('input:radio').on('click', function(){
+	membershipType = $(this).val();
 });
+$('#lookup').submit(function(e){
+	e.preventDefault();
+	var username = $('#gamertag').val();
+	$.ajax({
+	 url: "http://www.bungie.net/Platform/Destiny/SearchDestinyPlayer/"+membershipType+"/"+username+"/",
+	 headers: {
+	  "X-API-Key": apiKey
+	 },
+	 success: function(json){
+		 membershipId = json.Response[0]['membershipId'];
+		// console.log(json.Response[0]['membershipId']);
+		 $.ajax({
+			  url: "http://www.bungie.net/Platform/Destiny/Stats/Account/"+membershipType+"/"+membershipId+"/",
+			  headers:{
+				  "X-API-Key": apiKey
+			  },
+			  success: function(json){
+					console.log(json.Response.mergedAllCharacters.results.allPvP.allTime);  
+					kills = json.Response.mergedAllCharacters.results.allPvP.allTime.kills.basic.value;
+					deaths = json.Response.mergedAllCharacters.results.allPvP.allTime.deaths.basic.value;
+					assists = json.Response.mergedAllCharacters.results.allPvP.allTime.assists.basic.value;
+					kd = kills / deaths;
+					kd = kd.toFixed(2);
+					kad = (kills + assists) / deaths;
+					kad = kad.toFixed(2);
+					$("<h1>K/D: "+kd+"</h1>").appendTo("#results");
+					$("<h1>K+A/D: "+kad+"</h1>").appendTo("#results");
+					$("<h1>Kills: "+kills+"</h1>").appendTo("#results");
+					$("<h1>Deaths: "+deaths+"</h1>").appendTo("#results");
+					$("<h1>Assists: "+assists+"</h1>").appendTo("#results");
+			  }
+		 });
+	 }
+	});
+})
+//http://www.bungie.net/Platform/Destiny/"+membershipId+"/Account/"+membershipId+"/
 </script>
 </body>
 </html>
