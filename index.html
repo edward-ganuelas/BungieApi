@@ -1,0 +1,26 @@
+<!Doctype html>
+<html>
+<head>
+	<title>Bungie API</title>
+</head>
+<body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript">
+//Bungie API
+var apiKey = "";
+var membershipId = "4611686018437039314";
+$.ajax({
+ url: "http://www.bungie.net/Platform/Destiny/2/Account/"+membershipId+"/",
+ headers: {
+  "X-API-Key": apiKey
+ }
+}).done(function(json){
+// console.log(json.Response.data.inventoryItem.itemName); //Gjallarhorn
+ //document.write(JSON.parse(json));
+ console.log(json.Response["data"]);
+ 
+});
+</script>
+</body>
+</html>
