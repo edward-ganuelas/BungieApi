@@ -4,6 +4,7 @@ angular.module('app').controller("Controller", function($http){
 	vm.userName = '';
 	vm.platform = '';
 	vm.data = [];
+	vm.characters=[];
 	vm.search = function(){	
 		var apiKey = "";
 		var url = "http://www.bungie.net/Platform/Destiny/SearchDestinyPlayer/"+vm.platform+"/"+vm.userName+"/";
@@ -28,8 +29,21 @@ angular.module('app').controller("Controller", function($http){
 		 }
 		 );
 		 responseStats.success(function(data){
-			console.log(data.Response.mergedAllCharacters.results.allPvP); 
+			//console.log(data.Response); 
 			vm.data.push(data.Response.mergedAllCharacters.results.allPvP.allTime);
+			vm.characters.push(data.Response.characters);
+			
+			var characterUrl = "http://www.bungie.net/Platform/Destiny/"+vm.platform+"/Account/"+membershipId+"/Character/2305843009225815639/";
+			var responseCharcter = $http.get(characterUrl,
+			{
+				 headers:{
+					 "X-API-Key": apiKey
+				},
+				responseType: "json"
+			});
+			responseCharcter.success(function(data){
+				console.log(data);
+			});
 			
 		 });
 	 });

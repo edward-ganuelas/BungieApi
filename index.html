@@ -13,16 +13,27 @@
 		<input type="submit" value="Submit" />
 	</form>
 	
-	<ul>
-		<li ng-repeat="characters in main.data">
-			{{main.userName}}<br />
-			Kills: {{characters.kills.basic.value}}<br />
-			Deaths: {{characters.deaths.basic.value}}<br />
-			Assists: {{characters.assists.basic.value}}<br />
-			K\D: {{characters.kills.basic.value / characters.deaths.basic.value | number: 2}}<br />
-			K+A\D: {{(characters.kills.basic.value + characters.assists.basic.value) / characters.deaths.basic.value | number: 2}}
-		</li>
-	</ul>
+
+		<div ng-repeat="all in main.data">
+			<h3>{{main.userName}}</h3>
+			<p>Kills: {{all.kills.basic.value}}</p>
+			<p>Deaths: {{all.deaths.basic.value}}</p>
+			<p>Assists: {{all.assists.basic.value}}</p>
+			<p>K\D: {{all.kills.basic.value / all.deaths.basic.value | number: 2}}</p>
+			<p>K+A\D: {{(all.kills.basic.value + all.assists.basic.value) / all.deaths.basic.value | number: 2}}</p>
+		</div>
+		<table style="width: 100%; text-align: left;">
+			<tr ng-repeat="character in main.characters">
+				<td ng-repeat="guardian in character | orderBy: guardian.results.allPvP.allTime.kills.basic.value" ng-if="guardian.deleted != true">
+					<h3>{{guardian.characterId}}</h3>
+					<p>Kills: {{guardian.results.allPvP.allTime.kills.basic.value}}</p>
+					<p>Deaths: {{guardian.results.allPvP.allTime.deaths.basic.value}}</p>
+					<p>Assists: {{guardian.results.allPvP.allTime.assists.basic.value}}</p>
+					<p>K\D: {{guardian.results.allPvP.allTime.kills.basic.value / guardian.results.allPvP.allTime.deaths.basic.value | number: 2}}</p>
+					<p>K+A\D: {{(guardian.results.allPvP.allTime.kills.basic.value + guardian.results.allPvP.allTime.assists.basic.value) / guardian.results.allPvP.allTime.deaths.basic.value | number: 2}}</p>
+				</td>	
+			</tr>
+		</table>
 
 
 
