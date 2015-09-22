@@ -6,14 +6,23 @@
 <script src="angular_scripts.js"></script>
 </head>
 <body ng-app="app" ng-controller="Controller as main">
-	<form name="lookup" id="lookup">
+	<form name="lookup" id="lookup" ng-submit="main.search()">
 		<input type="radio" value="1" name="network" checked="true" ng-model="main.platform" />Xbox
 		<input type="radio" value="2" name="network" ng-model="main.platform"/>PSN
 		<input type="text" id="gamertag" ng-model="main.userName" />
 		<input type="submit" value="Submit" />
 	</form>
 	
-	<p>{{main.userName}}</p>
+	<ul>
+		<li ng-repeat="characters in main.data">
+			{{main.userName}}<br />
+			Kills: {{characters.kills.basic.value}}<br />
+			Deaths: {{characters.deaths.basic.value}}<br />
+			Assists: {{characters.assists.basic.value}}<br />
+			K\D: {{characters.kills.basic.value / characters.deaths.basic.value | number: 2}}<br />
+			K+A\D: {{(characters.kills.basic.value + characters.assists.basic.value) / characters.deaths.basic.value | number: 2}}
+		</li>
+	</ul>
 
 
 
@@ -27,44 +36,44 @@ var deaths = null;
 var assists = null;
 var kd = null;
 var kad = null;
-$('input:radio').on('click', function(){
-	membershipType = $(this).val();
-});
-$('#lookup').submit(function(e){
-	e.preventDefault();
-	var username = $('#gamertag').val();
-	$.ajax({
-	 url: "http://www.bungie.net/Platform/Destiny/SearchDestinyPlayer/"+membershipType+"/"+username+"/",
-	 headers: {
-	  "X-API-Key": apiKey
-	 },
-	 success: function(json){
-		 membershipId = json.Response[0]['membershipId'];
-		// console.log(json.Response[0]['membershipId']);
-		 $.ajax({
-			  url: "http://www.bungie.net/Platform/Destiny/Stats/Account/"+membershipType+"/"+membershipId+"/",
-			  headers:{
-				  "X-API-Key": apiKey
-			  },
-			  success: function(json){
-					console.log(json.Response.mergedAllCharacters.results.allPvP.allTime);  
-					kills = json.Response.mergedAllCharacters.results.allPvP.allTime.kills.basic.value;
-					deaths = json.Response.mergedAllCharacters.results.allPvP.allTime.deaths.basic.value;
-					assists = json.Response.mergedAllCharacters.results.allPvP.allTime.assists.basic.value;
-					kd = kills / deaths;
-					kd = kd.toFixed(2);
-					kad = (kills + assists) / deaths;
-					kad = kad.toFixed(2);
-					$("<h1>K/D: "+kd+"</h1>").appendTo("#results");
-					$("<h1>K+A/D: "+kad+"</h1>").appendTo("#results");
-					$("<h1>Kills: "+kills+"</h1>").appendTo("#results");
-					$("<h1>Deaths: "+deaths+"</h1>").appendTo("#results");
-					$("<h1>Assists: "+assists+"</h1>").appendTo("#results");
-			  }
-		 });
-	 }
-	});
-})
+// $('input:radio').on('click', function(){
+// 	membershipType = $(this).val();
+// });
+// $('#lookup').submit(function(e){
+// 	e.preventDefault();
+// 	var username = $('#gamertag').val();
+// 	$.ajax({
+// 	 url: "http://www.bungie.net/Platform/Destiny/SearchDestinyPlayer/"+membershipType+"/"+username+"/",
+// 	 headers: {
+// 	  "X-API-Key": apiKey
+// 	 },
+// 	 success: function(json){
+// 		 membershipId = json.Response[0]['membershipId'];
+// 		// console.log(json.Response[0]['membershipId']);
+// 		 $.ajax({
+// 			  url: "http://www.bungie.net/Platform/Destiny/Stats/Account/"+membershipType+"/"+membershipId+"/",
+// 			  headers:{
+// 				  "X-API-Key": apiKey
+// 			  },
+// 			  success: function(json){
+// 					console.log(json.Response.mergedAllCharacters.results.allPvP.allTime);  
+// 					kills = json.Response.mergedAllCharacters.results.allPvP.allTime.kills.basic.value;
+// 					deaths = json.Response.mergedAllCharacters.results.allPvP.allTime.deaths.basic.value;
+// 					assists = json.Response.mergedAllCharacters.results.allPvP.allTime.assists.basic.value;
+// 					kd = kills / deaths;
+// 					kd = kd.toFixed(2);
+// 					kad = (kills + assists) / deaths;
+// 					kad = kad.toFixed(2);
+// 					$("<h1>K/D: "+kd+"</h1>").appendTo("#results");
+// 					$("<h1>K+A/D: "+kad+"</h1>").appendTo("#results");
+// 					$("<h1>Kills: "+kills+"</h1>").appendTo("#results");
+// 					$("<h1>Deaths: "+deaths+"</h1>").appendTo("#results");
+// 					$("<h1>Assists: "+assists+"</h1>").appendTo("#results");
+// 			  }
+// 		 });
+// 	 }
+// 	});
+// })
 //http://www.bungie.net/Platform/Destiny/"+membershipId+"/Account/"+membershipId+"/
 </script>
 </body>
