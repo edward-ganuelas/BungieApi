@@ -7,9 +7,9 @@
 </head>
 <body ng-app="app" ng-controller="Controller as main">
 	<form name="lookup" id="lookup" ng-submit="main.search()">
-		<input type="radio" value="1" name="network" checked="true" ng-model="main.platform" />Xbox
-		<input type="radio" value="2" name="network" ng-model="main.platform"/>PSN
-		<input type="text" id="gamertag" ng-model="main.userName" />
+		<input type="radio" value="1" name="network"  required ng-model="main.platform" />Xbox
+		<input type="radio" value="2" name="network" required ng-model="main.platform" />PSN
+		<input type="text" id="gamertag" ng-model="main.userName" requried />
 		<input type="submit" value="Submit" />
 	</form>
 	
@@ -23,14 +23,15 @@
 			<p>K+A\D: {{(all.kills.basic.value + all.assists.basic.value) / all.deaths.basic.value | number: 2}}</p>
 		</div>
 		<table style="width: 100%; text-align: left;">
-			<tr ng-repeat="character in main.characters">
-				<td ng-repeat="guardian in character | orderBy: guardian.results.allPvP.allTime.kills.basic.value" ng-if="guardian.deleted != true">
-					<h3>{{guardian.characterId}}</h3>
-					<p>Kills: {{guardian.results.allPvP.allTime.kills.basic.value}}</p>
-					<p>Deaths: {{guardian.results.allPvP.allTime.deaths.basic.value}}</p>
-					<p>Assists: {{guardian.results.allPvP.allTime.assists.basic.value}}</p>
-					<p>K\D: {{guardian.results.allPvP.allTime.kills.basic.value / guardian.results.allPvP.allTime.deaths.basic.value | number: 2}}</p>
-					<p>K+A\D: {{(guardian.results.allPvP.allTime.kills.basic.value + guardian.results.allPvP.allTime.assists.basic.value) / guardian.results.allPvP.allTime.deaths.basic.value | number: 2}}</p>
+			<tr>
+				<td ng-repeat="character in main.characters | orderBy: character.powerLevel">
+					<h3>{{character.race.raceName}} {{character.gender.genderName}} {{character.characterClass.className}}</h3>
+					<p>Light: {{character.powerLevel}}</p>
+					<p>Kills: {{character.stats.kills}}</p>
+					<p>Deaths: {{character.stats.deaths}}</p>
+					<p>Assists: {{character.stats.assists}}</p>
+					<p>K\D: {{character.stats.kills / character.stats.deaths | number: 2}}</p>
+					<p>K+A\D: {{(character.stats.kills + character.stats.assists) / character.stats.deaths | number: 2}}</p>
 				</td>	
 			</tr>
 		</table>
